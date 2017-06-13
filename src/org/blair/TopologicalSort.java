@@ -1,4 +1,35 @@
 package org.blair;
+/******************************************************************************
+ * This TopologicalSort implementation is based on one from Keith Schwarz.
+ *
+ * A linear-time algorithm for computing a topological sort of a directed
+ * graph (DG). A topological sort is an ordering of the nodes in a graph
+ * such that for each node v, all of the ancestors of v appear in the ordering
+ * before v itself. Topological sorting is useful, for example, when computing
+ * some function on a DG where each node's value depends on its ancestors.
+ * Running a topological sort and then visiting the nodes in the order
+ * specified by this sorted order ensures that the necessary values for each
+ * node are available before the node is visited.
+ *
+ * There are several algorithms for computing topological sorts. The one used
+ * here was first described in "Edge-Disjoint Spanning Trees and Depth-First
+ * Search" (DFS) by Robert Tarjan.  We begin by constructing the reverse 
+ * graph from the source graph, then running a DFS from each node in
+ * the graph.Whenever we finish expanding a node, we add it to a list of 
+ * visited nodes.The intution behind this algorithm is that a DFS in the 
+ * reverse graph will visit every node that is an ancestor of the given node 
+ * before it finishes expanding out any node. Since those nodes will be added 
+ * to the sorted order before the expanded node, we have the desired property
+ * of the topological sort.
+ *
+ * This process can detect a cycle in the original graph. As we do the
+ * search, we'll maintain a set of nodes that we have visited and a set of 
+ * nodes that we have expanded.  If when doing the DFS we find a node
+ * that has been visited but not expanded, it means that we have encountered a
+ * cycle in the graph. Moreover, if a cycle exists, we know that this will
+ * occur, since the first time any node in the cycle is visited the DFS will
+ * expand out the cycle.
+ */
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -8,6 +39,9 @@ import java.util.Set;
 
 public class TopologicalSort
 {
+    // Given a DG, returns a topological sorting of the
+    // nodes in the graph. If the input graph is not a DG, 
+    // throws an IllegalArgumentException.
     public static < T > List < T > sort( DirectedGraph < T > dg, boolean reverseList )
     {
         // Construct the reverse graph from the input graph.
@@ -40,6 +74,7 @@ public class TopologicalSort
         return result;
     }
     
+    // Returns the reverse of the input graph.
     private static < T > DirectedGraph < T > reverseGraph( DirectedGraph < T > dg )
     {
         DirectedGraph < T > result = new DirectedGraph < T >();
@@ -62,6 +97,8 @@ public class TopologicalSort
         return result;
     }
     
+    // Recursively performs a depth-first search from the specified node,
+    // marking all nodes encountered by the search.
     private static < T > void explore( T node, DirectedGraph < T > dg,
                                        List < T > ordering, Set < T > visited,
                                        Set < T > expanded )
