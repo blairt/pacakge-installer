@@ -37,6 +37,7 @@ public class TestPackageInstaller
               "CamelCaser: KittenService", "Fraudstream: ","Ice: Leetmeme" };
     
         PackageInstaller packInstall = new PackageInstaller();
-        packInstall.buildInstaller( packages2Install );  // Throw Cycle Error  
+        // will throw llegalArgumentException for Cycle Error
+        packInstall.buildInstaller( packages2Install );    
     }
 }
