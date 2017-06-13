@@ -26,8 +26,20 @@ public class TestPackageInstaller
         
         PackageInstaller packInstall = new PackageInstaller();
         String packageOrder = packInstall.buildInstaller( packages2Install );
-        
-        System.out.println( packageOrder );
+        // Check to see that Cyberportal is before Leetmeme.
         assertTrue( packageOrder.indexOf( "Cyberportal" ) < packageOrder.indexOf( "Leetmeme" ) );
+     // Check to see that KittenService is before KittenService.
+        assertTrue( packageOrder.indexOf( "KittenService" ) < packageOrder.indexOf( "CamelCaser" ) );
+    }
+    
+    @Test(expected = java.lang.IllegalArgumentException.class)
+    public void testPackageOrderingWithCycle()
+    {
+        String[] packages2Install =
+            { "KittenService: ", "Leetmeme: Cyberportal", "Cyberportal: Ice", 
+              "CamelCaser: KittenService", "Fraudstream: ","Ice: Leetmeme" };
+    
+        PackageInstaller packInstall = new PackageInstaller();
+        packInstall.buildInstaller( packages2Install );  // Throw Cycle Error  
     }
 }
