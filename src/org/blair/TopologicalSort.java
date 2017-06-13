@@ -1,13 +1,14 @@
 package org.blair;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
 public class TopologicalSort
 {
-    public static < T > List < T > sort( DirectedGraph < T > dg )
+    public static < T > List < T > sort( DirectedGraph < T > dg, boolean reverseList )
     {
         // Construct the reverse graph from the input graph.
         DirectedGraph < T > dgRev = reverseGraph( dg );
@@ -30,6 +31,12 @@ public class TopologicalSort
             explore( node, dgRev, result, visited, expanded );
         }
 
+        // The result list is put together from right to left.
+        // Check to see if the result list should be returned left to right.
+        if( reverseList) 
+        {
+            Collections.reverse( result );
+        }
         return result;
     }
     
@@ -60,7 +67,7 @@ public class TopologicalSort
                                        Set < T > expanded )
     {
         // Check whether we've been here before.
-        // If so, we should stop the search.
+        // If so, we should stop the search. Cycle?
         if ( visited.contains( node ) )
         {
             // Two cases to consider. First, if this node has already
